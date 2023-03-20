@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.PorfolioArgPrograma.Porfolio.PorfolioArgApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 34.363 s - in com.PorfolioArgPrograma.Porfolio.PorfolioArgApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 49.473 s - in com.PorfolioArgPrograma.Porfolio.PorfolioArgApplicationTests
