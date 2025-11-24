@@ -4,44 +4,34 @@ import com.PorfolioArgPrograma.Porfolio.Entity.Estudios;
 import com.PorfolioArgPrograma.Porfolio.Repository.EstudiosRepository;
 import java.util.List;
 import java.util.Optional;
-import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
-/**
- *
- * @author Juan Pablo
- */
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class EstudiosService {
-    
     @Autowired
     EstudiosRepository estudiosRepository;
-    
+
     public List<Estudios> list(){
         return estudiosRepository.findAll();
     }
-    
-     public Optional<Estudios> getOne(int id){
+
+    public Optional<Estudios> getOne(Long id){
         return estudiosRepository.findById(id);
     }
 
-    
-    public void save(Estudios estudio){
-        estudiosRepository.save(estudio);
+    @Transactional
+    public void save(Estudios estudios){
+        estudiosRepository.save(estudios);
     }
 
-    
-    public void delete(int id){
+    @Transactional
+    public void delete(Long id){
         estudiosRepository.deleteById(id);
     }
 
-    public boolean existsById(int id){
+    public boolean existsById(Long id){
         return estudiosRepository.existsById(id);
     }
-     
-    }
-
+}

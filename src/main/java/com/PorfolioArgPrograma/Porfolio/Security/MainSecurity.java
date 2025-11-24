@@ -1,11 +1,9 @@
-package com.PorfolioArgPrograma.Porfolio.Segurity;
+package com.PorfolioArgPrograma.Porfolio.Security;
 
-import com.PorfolioArgPrograma.Porfolio.Segurity.Jwt.JwtEntryPoint;
-import com.PorfolioArgPrograma.Porfolio.Segurity.Jwt.JwtTokenFilter;
-import com.PorfolioArgPrograma.Porfolio.Segurity.Service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -16,61 +14,89 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
 
-/**
- *
- * @author Juan Pablo
- */
+import com.PorfolioArgPrograma.Porfolio.Security.Jwt.JwtEntryPoint;
+import com.PorfolioArgPrograma.Porfolio.Security.Jwt.JwtTokenFilter;
+import com.PorfolioArgPrograma.Porfolio.Security.Service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class MainSecurity extends WebSecurityConfigurerAdapter {
-    
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
-    
-    @Autowired
-    JwtEntryPoint jwtEntryPoint;
-    
-    @Bean
-    public JwtTokenFilter jwtTokenFilter(){
-        return new JwtTokenFilter();
-    }
-    
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
+	@Autowired
+	UserDetailsServiceImpl userDetailsService;
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-    
-    @Override
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
-    }
-    
+	@Autowired
+	JwtEntryPoint jwtEntryPoint;
+
+	@Bean
+	public JwtTokenFilter jwtTokenFilter() {
+		return new JwtTokenFilter();
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		
+		// Get allowed origins from environment variable
+		String allowedOrigins = System.getenv("ALLOWED_ORIGINS");
+		if (allowedOrigins != null && !allowedOrigins.isEmpty()) {
+			configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+		} else {
+			// Fallback for development
+			configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+		}
+		
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Origin", "Accept", "X-Requested-With"));
+		configuration.setAllowCredentials(true);
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+	}
+
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+
+	@Override
+	protected AuthenticationManager authenticationManager() throws Exception {
+		return super.authenticationManager();
+	}
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-         http.cors().and().csrf().disable()
+        http.cors().configurationSource(corsConfigurationSource())
+                .and()
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
+                .antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/api-docs/**").permitAll()
+                .antMatchers("/actuator/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
-    
-    
 }

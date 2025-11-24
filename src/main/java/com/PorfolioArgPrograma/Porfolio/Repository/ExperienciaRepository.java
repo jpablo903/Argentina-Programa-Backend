@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * @author Juan Pablo
  */
 @Repository
-public interface ExperienciaRepository extends JpaRepository<Experiencia, Integer> {
+public interface ExperienciaRepository extends JpaRepository<Experiencia, Long> {
     
 }

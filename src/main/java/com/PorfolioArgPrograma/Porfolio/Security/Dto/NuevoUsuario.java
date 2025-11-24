@@ -1,7 +1,5 @@
-package com.PorfolioArgPrograma.Porfolio.Segurity.Dto;
+package com.PorfolioArgPrograma.Porfolio.Security.Dto;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
@@ -10,58 +8,46 @@ import javax.validation.constraints.NotBlank;
  * @author Juan Pablo
  */
 
-
 public class NuevoUsuario {
-    @NotBlank
-    private String nombre;
-    @NotBlank
-    private String nombreUsuario;
-    @Email
-    private String email;
-    @NotBlank
-    private String password;
-    private Set<String> roles = new HashSet<>();
+	@NotBlank
+	private String nombre;
+	@NotBlank
+	private String nombreUsuario;
+	@Email
+	private String email;
+	@NotBlank
+	private String password;
 
-    public String getNombre() {
-        return nombre;
-    }
+	public String getNombre() {
+		return nombre;
+	}
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
 
-    public String getNombreUsuario() {
-        return nombreUsuario;
-    }
+	public String getNombreUsuario() {
+		return nombreUsuario;
+	}
 
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
-    }
+	public void setNombreUsuario(String nombreUsuario) {
+		this.nombreUsuario = nombreUsuario;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
-
-    
-    
 }

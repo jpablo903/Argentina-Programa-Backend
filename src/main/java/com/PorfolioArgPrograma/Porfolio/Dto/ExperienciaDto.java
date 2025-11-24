@@ -1,7 +1,7 @@
 package com.PorfolioArgPrograma.Porfolio.Dto;
 
-import com.PorfolioArgPrograma.Porfolio.Entity.Persona;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,20 +14,27 @@ import lombok.Setter;
 @Setter
 public class ExperienciaDto {
     
-    @NotBlank
+    @NotBlank(message = "El puesto es obligatorio")
+    @Size(max = 100)
     private String puesto;
-    @NotBlank
+    
+    @NotBlank(message = "El nombre de la compañía es obligatorio")
+    @Size(max = 100)
     private String nombreCompania;
-    @NotBlank
+    
+    @NotBlank(message = "El lugar es obligatorio")
+    @Size(max = 100)
     private String lugar;
-    @NotBlank
+    
+    // Fechas en formato ISO (yyyy-MM-dd) para ser parseadas a LocalDate
     private String fechaInicio;
     private String fechaFin;
-    @NotBlank
+    
+    @Size(max = 1000)
     private String descripcion;
-    @NotBlank
+    
+    @Size(max = 500)
     private String imgUrl;
-    //private Persona persona;
 
     public ExperienciaDto() {
     }
@@ -42,6 +49,4 @@ public class ExperienciaDto {
         this.descripcion = descripcion;
         this.imgUrl = imgUrl;
     }   
-    
-    
 }

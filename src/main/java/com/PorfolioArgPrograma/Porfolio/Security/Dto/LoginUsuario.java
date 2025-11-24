@@ -1,6 +1,5 @@
-package com.PorfolioArgPrograma.Porfolio.Segurity.Dto;
+package com.PorfolioArgPrograma.Porfolio.Security.Dto;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -8,30 +7,28 @@ import javax.validation.constraints.NotBlank;
  * @author Juan Pablo
  */
 
-
 public class LoginUsuario {
-    
-    @NotBlank
-    private String nombreUsuario;
- 
-    @NotBlank
-    private String password;
 
-    public String getNombreUsuario() {
-        return nombreUsuario;
-    }
+	@NotBlank
+	private String nombreUsuario;
 
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
-    }
+	@NotBlank
+	private String password;
 
-    public String getPassword() {
-        return password;
-    }
+	public String getNombreUsuario() {
+		return nombreUsuario;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    
-    
+	public void setNombreUsuario(String nombreUsuario) {
+		this.nombreUsuario = nombreUsuario;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 }

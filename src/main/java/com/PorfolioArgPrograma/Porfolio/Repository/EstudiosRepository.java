@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface EstudiosRepository extends JpaRepository<Estudios, Integer> {
+public interface EstudiosRepository extends JpaRepository<Estudios, Long> {
     
 }

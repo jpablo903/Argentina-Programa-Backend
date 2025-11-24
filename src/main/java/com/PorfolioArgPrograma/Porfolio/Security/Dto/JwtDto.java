@@ -1,6 +1,7 @@
-package com.PorfolioArgPrograma.Porfolio.Segurity.Dto;
+package com.PorfolioArgPrograma.Porfolio.Security.Dto;
 
 import java.util.Collection;
+
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -8,49 +9,49 @@ import org.springframework.security.core.GrantedAuthority;
  * @author Juan Pablo
  */
 public class JwtDto {
-    
-    private String token;
-    
-    private String bearer = "Bearer";
 
-   private String nombreUsuario;
-    private Collection<? extends GrantedAuthority> authorities;
+	private String token;
 
-    public JwtDto(String token, String nombreUsuario, Collection<? extends GrantedAuthority> authorities) {
-        this.token = token;
-        this.nombreUsuario = nombreUsuario;
-        this.authorities = authorities;
-    }
+	private String bearer = "Bearer";
 
-    public String getToken() {
-        return token;
-    }
+	private String nombreUsuario;
+	private Collection<? extends GrantedAuthority> authorities;
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+	public JwtDto(String token, String nombreUsuario, Collection<? extends GrantedAuthority> authorities) {
+		this.token = token;
+		this.nombreUsuario = nombreUsuario;
+		this.authorities = authorities;
+	}
 
-    public String getBearer() {
-        return bearer;
-    }
+	public String getToken() {
+		return token;
+	}
 
-    public void setBearer(String bearer) {
-        this.bearer = bearer;
-    }
+	public void setToken(String token) {
+		this.token = token;
+	}
 
-    public String getNombreUsuario() {
-        return nombreUsuario;
-    }
+	public String getBearer() {
+		return bearer;
+	}
 
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
-    }
+	public void setBearer(String bearer) {
+		this.bearer = bearer;
+	}
 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
+	public String getNombreUsuario() {
+		return nombreUsuario;
+	}
 
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
+	public void setNombreUsuario(String nombreUsuario) {
+		this.nombreUsuario = nombreUsuario;
+	}
+
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return authorities;
+	}
+
+	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+		this.authorities = authorities;
+	}
 }

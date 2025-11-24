@@ -1,4 +1,4 @@
-package com.PorfolioArgPrograma.Porfolio.Segurity.Enums;
+package com.PorfolioArgPrograma.Porfolio.Security.Enums;
 
 /**
  *
@@ -6,5 +6,5 @@ package com.PorfolioArgPrograma.Porfolio.Segurity.Enums;
  */
 
 public enum RolNombre {
-    ROLE_ADMIN, ROLE_USER
+	ROLE_ADMIN
 }

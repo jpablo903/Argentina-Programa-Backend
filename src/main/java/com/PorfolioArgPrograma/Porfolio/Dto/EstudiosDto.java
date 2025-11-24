@@ -20,9 +20,7 @@ public class EstudiosDto {
     @NotBlank
     private String fechaInicio;
     private String fechaFin;
-    @NotBlank
     private String urlLogo;
-    @NotBlank
     private String descripcion;
 
     public EstudiosDto() {

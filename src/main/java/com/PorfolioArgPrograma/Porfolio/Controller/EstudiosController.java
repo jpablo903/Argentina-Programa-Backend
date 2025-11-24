@@ -4,11 +4,15 @@ import com.PorfolioArgPrograma.Porfolio.Dto.EstudiosDto;
 import com.PorfolioArgPrograma.Porfolio.Dto.Mensaje;
 import com.PorfolioArgPrograma.Porfolio.Entity.Estudios;
 import com.PorfolioArgPrograma.Porfolio.Service.EstudiosService;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,66 +38,77 @@ public class EstudiosController {
     @GetMapping("/lista")
     public ResponseEntity<List<Estudios>> list(){
         List<Estudios> list = estudiosService.list();
-        return new ResponseEntity(list, HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
     
     @GetMapping("/detalle/{id}")
-    public ResponseEntity<Estudios> getById(@PathVariable("id") int id){
+    public ResponseEntity<?> getById(@PathVariable("id") Long id){
         if(!estudiosService.existsById(id))
-            return new ResponseEntity(new Mensaje("Estudio no encontrado!"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Mensaje("Estudio no encontrado"), HttpStatus.NOT_FOUND);
         Estudios estudios = estudiosService.getOne(id).get();
-        return new ResponseEntity(estudios, HttpStatus.OK);
-    
+        return new ResponseEntity<>(estudios, HttpStatus.OK);
     }
     
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/crear")
-    public ResponseEntity<?> crear(@RequestBody EstudiosDto estudiosDto){
-        if(estudiosDto.getTituloEstudios()==null || estudiosDto.getTituloEstudios()=="")
-            return new ResponseEntity(new Mensaje("El nombre del estudios es obligatorio."), HttpStatus.BAD_REQUEST);
-        if(estudiosDto.getInstitucionEstudio()==null || estudiosDto.getInstitucionEstudio()=="")
-            return new ResponseEntity(new Mensaje("El nombre de la institucion es obligatoria."), HttpStatus.BAD_REQUEST);
-        if(estudiosDto.getFechaInicio()==null || estudiosDto.getFechaInicio()=="")
-            return new ResponseEntity(new Mensaje("La fecha es obligatoria."), HttpStatus.BAD_REQUEST);
-        if(estudiosDto.getDescripcion()==null || estudiosDto.getDescripcion()=="")
-            return new ResponseEntity(new Mensaje("La descripcion es obligatoria."), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> crear(@Valid @RequestBody EstudiosDto estudiosDto){
+        if(!StringUtils.hasText(estudiosDto.getTituloEstudios()))
+            return new ResponseEntity<>(new Mensaje("El título de estudios es obligatorio"), HttpStatus.BAD_REQUEST);
+        if(!StringUtils.hasText(estudiosDto.getInstitucionEstudio()))
+            return new ResponseEntity<>(new Mensaje("El nombre de la institución es obligatorio"), HttpStatus.BAD_REQUEST);
         
-        Estudios estudios = new Estudios(estudiosDto.getTituloEstudios(), estudiosDto.getInstitucionEstudio(),
-                estudiosDto.getFechaInicio(), estudiosDto.getFechaFin(), estudiosDto.getUrlLogo(), estudiosDto.getDescripcion());
-        estudiosService.save(estudios);
-        return new ResponseEntity(new Mensaje("Estudio agregado exitosamente!"), HttpStatus.OK);
+        try {
+            LocalDate fechaInicio = StringUtils.hasText(estudiosDto.getFechaInicio()) 
+                ? LocalDate.parse(estudiosDto.getFechaInicio()) 
+                : null;
+            LocalDate fechaFin = StringUtils.hasText(estudiosDto.getFechaFin()) 
+                ? LocalDate.parse(estudiosDto.getFechaFin()) 
+                : null;
+            
+            Estudios estudios = new Estudios(estudiosDto.getTituloEstudios(), estudiosDto.getInstitucionEstudio(),
+                    fechaInicio, fechaFin, estudiosDto.getUrlLogo(), estudiosDto.getDescripcion());
+            estudiosService.save(estudios);
+            return new ResponseEntity<>(new Mensaje("Estudio agregado exitosamente"), HttpStatus.OK);
+        } catch (DateTimeParseException e) {
+            return new ResponseEntity<>(new Mensaje("Formato de fecha inválido. Use yyyy-MM-dd"), HttpStatus.BAD_REQUEST);
+        }
     }
     
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<?> update(@PathVariable("id")int id, @RequestBody EstudiosDto estudiosDto){
+    public ResponseEntity<?> update(@PathVariable("id") Long id, @Valid @RequestBody EstudiosDto estudiosDto){
         if(!estudiosService.existsById(id))
-            return new ResponseEntity(new Mensaje("El curso no exite."), HttpStatus.NOT_FOUND);
-        if(estudiosDto.getTituloEstudios()==null || estudiosDto.getTituloEstudios()=="")
-            return new ResponseEntity(new Mensaje("El nombre del estudio es obligatorio."), HttpStatus.BAD_REQUEST);
-        if(estudiosDto.getInstitucionEstudio()==null || estudiosDto.getInstitucionEstudio()=="")
-            return new ResponseEntity(new Mensaje("La institucion es obligatorio."), HttpStatus.BAD_REQUEST);
-        if(estudiosDto.getFechaInicio()==null || estudiosDto.getFechaInicio()=="")
-            return new ResponseEntity(new Mensaje("La fecha de obligatorio."), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new Mensaje("El estudio no existe"), HttpStatus.NOT_FOUND);
+        if(!StringUtils.hasText(estudiosDto.getTituloEstudios()))
+            return new ResponseEntity<>(new Mensaje("El título de estudios es obligatorio"), HttpStatus.BAD_REQUEST);
+        if(!StringUtils.hasText(estudiosDto.getInstitucionEstudio()))
+            return new ResponseEntity<>(new Mensaje("La institución es obligatoria"), HttpStatus.BAD_REQUEST);
         
-        Estudios estudios = estudiosService.getOne(id).get();
-        estudios.setTituloEstudios(estudiosDto.getTituloEstudios());
-        estudios.setInstitucionEstudio(estudiosDto.getInstitucionEstudio());
-        estudios.setFechaInicio(estudiosDto.getFechaInicio());
-        estudios.setFechaFin(estudiosDto.getFechaFin());
-        estudios.setUrlLogo(estudiosDto.getUrlLogo());
-        estudios.setDescripcion(estudiosDto.getDescripcion());
-        estudiosService.save(estudios);
-        return new ResponseEntity(new Mensaje("Datos Actualizados."), HttpStatus.OK);        
+        try {
+            Estudios estudios = estudiosService.getOne(id).get();
+            estudios.setTituloEstudios(estudiosDto.getTituloEstudios());
+            estudios.setInstitucionEstudio(estudiosDto.getInstitucionEstudio());
+            estudios.setFechaInicio(StringUtils.hasText(estudiosDto.getFechaInicio()) 
+                ? LocalDate.parse(estudiosDto.getFechaInicio()) 
+                : null);
+            estudios.setFechaFin(StringUtils.hasText(estudiosDto.getFechaFin()) 
+                ? LocalDate.parse(estudiosDto.getFechaFin()) 
+                : null);
+            estudios.setUrlLogo(estudiosDto.getUrlLogo());
+            estudios.setDescripcion(estudiosDto.getDescripcion());
+            estudiosService.save(estudios);
+            return new ResponseEntity<>(new Mensaje("Datos actualizados"), HttpStatus.OK);
+        } catch (DateTimeParseException e) {
+            return new ResponseEntity<>(new Mensaje("Formato de fecha inválido. Use yyyy-MM-dd"), HttpStatus.BAD_REQUEST);
+        }
     }
     
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id")int id){
+    public ResponseEntity<?> delete(@PathVariable("id") Long id){
         if(!estudiosService.existsById(id))
-            return new ResponseEntity(new Mensaje("El curso no exite."), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Mensaje("El estudio no existe"), HttpStatus.NOT_FOUND);
         estudiosService.delete(id);
-        return new ResponseEntity(new Mensaje("Curso eliminado."), HttpStatus.OK);
+        return new ResponseEntity<>(new Mensaje("Estudio eliminado"), HttpStatus.OK);
     } 
-    
 }
