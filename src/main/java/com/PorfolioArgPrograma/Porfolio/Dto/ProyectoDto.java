@@ -1,11 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.PorfolioArgPrograma.Porfolio.Dto;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -15,8 +13,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProyectoDto {
-    
+
     @NotBlank
     private String nombreProyecto;
     @NotBlank
@@ -25,16 +25,4 @@ public class ProyectoDto {
     private String urlImagen;
     @NotBlank
     private String urlProyecto;
-
-    public ProyectoDto() {
-    }
-
-    public ProyectoDto(String nombreProyecto, String descripcion, String urlImagen, String urlProyecto) {
-        this.nombreProyecto = nombreProyecto;
-        this.descripcion = descripcion;
-        this.urlImagen = urlImagen;
-        this.urlProyecto = urlProyecto;
-    }
-    
-    
 }

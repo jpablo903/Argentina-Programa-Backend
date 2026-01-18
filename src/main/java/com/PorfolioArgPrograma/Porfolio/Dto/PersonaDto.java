@@ -1,7 +1,9 @@
 package com.PorfolioArgPrograma.Porfolio.Dto;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,8 +13,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PersonaDto {
-    
+
     @NotBlank
     private String nombre;
     @NotBlank
@@ -21,23 +25,10 @@ public class PersonaDto {
     private String profesion;
     @NotBlank
     private String urlImagen;
-    
+
     @NotBlank
     private String acercaDe;
-    
+
     @NotBlank
     private String urlImagenBanner;
-
-    public PersonaDto() {
-    }
-
-    public PersonaDto(String nombre, String apellido, String profesion,
-            String urlImagen, String acercaDe, String urlImagenBanner) {
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.profesion = profesion;
-        this.urlImagen = urlImagen;
-        this.acercaDe = acercaDe;
-        this.urlImagenBanner = urlImagenBanner;
-    }
 }

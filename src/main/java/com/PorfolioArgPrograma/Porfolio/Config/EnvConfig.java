@@ -2,7 +2,7 @@ package com.PorfolioArgPrograma.Porfolio.Config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
@@ -15,10 +15,10 @@ public class EnvConfig {
 
     @PostConstruct
     public void loadEnv() {
-        logger.info("🚀 INICIANDO CARGA DE VARIABLES DE ENTORNO...");
+        logger.info("INICIANDO CARGA DE VARIABLES DE ENTORNO...");
 
         try {
-            // Intentar cargar desde archivo .env en raíz del proyecto
+            // Intentar cargar desde archivo .env en raiz del proyecto
             File envFile = new File(".env");
             if (envFile.exists()) {
                 Properties envProps = new Properties();
@@ -28,28 +28,28 @@ public class EnvConfig {
                 for (String key : envProps.stringPropertyNames()) {
                     String value = envProps.getProperty(key).trim();
                     System.setProperty(key, value);
-                    logger.info("✅ {}: {}", key,
-                            (key.contains("PASSWORD") || key.contains("SECRET")) ? "••••••••" : value);
+                    logger.info("{}: {}", key,
+                            (key.contains("PASSWORD") || key.contains("SECRET")) ? "********" : value);
                 }
-                logger.info("📁 Archivo .env cargado exitosamente desde: {}", envFile.getAbsolutePath());
+                logger.info("Archivo .env cargado exitosamente desde: {}", envFile.getAbsolutePath());
             } else {
-                logger.warn("⚠️  Archivo .env no encontrado en: {}", envFile.getAbsolutePath());
+                logger.warn("Archivo .env no encontrado en: {}", envFile.getAbsolutePath());
             }
 
-            // Verificar que las variables críticas estén cargadas
-            String[] criticalVars = {"DB_URL", "DB_USERNAME", "DB_PASSWORD"};
-            logger.info("🔍 VERIFICACIÓN DE VARIABLES CRÍTICAS:");
+            // Verificar que las variables criticas esten cargadas
+            String[] criticalVars = { "DB_URL", "DB_USERNAME", "DB_PASSWORD" };
+            logger.info("VERIFICACION DE VARIABLES CRITICAS:");
             for (String var : criticalVars) {
                 String value = System.getProperty(var);
                 if (value != null && !value.isEmpty()) {
-                    logger.info("   {}: ✅ CARGADO", var);
+                    logger.info("   {}: CARGADO", var);
                 } else {
-                    logger.error("   {}: ❌ NO CARGADO", var);
+                    logger.error("   {}: NO CARGADO", var);
                 }
             }
 
         } catch (Exception e) {
-            logger.error("❌ ERROR CARGANDO .env: {}", e.getMessage());
+            logger.error("ERROR CARGANDO .env: {}", e.getMessage());
         }
     }
 }

@@ -1,30 +1,5 @@
 HELP.md
-##target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-HELP.md
-##target/
+target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -53,10 +28,17 @@ HELP.md
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+nbactions.xml
 
 ### VS Code ###
 .vscode/
-/target/
 
 ### Environment Variables ###
 .env
+.env.local
+.env.*
+
+### Logs and Temp Files ###
+*.log
+*.txt
+.DS_Store

@@ -2,13 +2,14 @@ package com.PorfolioArgPrograma.Porfolio.Security.Service;
 
 import java.util.Optional;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.PorfolioArgPrograma.Porfolio.Security.Entity.Usuario;
 import com.PorfolioArgPrograma.Porfolio.Security.Repository.UsuarioRepository;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  *
@@ -16,10 +17,10 @@ import com.PorfolioArgPrograma.Porfolio.Security.Repository.UsuarioRepository;
  */
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UsuarioService {
 
-	@Autowired
-	UsuarioRepository usuarioRepository;
+	private final UsuarioRepository usuarioRepository;
 
 	public Optional<Usuario> getByNombreUsuario(String nombreUsuario) {
 		return usuarioRepository.findByNombreUsuario(nombreUsuario);
