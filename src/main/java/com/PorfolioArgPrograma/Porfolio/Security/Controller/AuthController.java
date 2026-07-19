@@ -3,8 +3,10 @@ package com.PorfolioArgPrograma.Porfolio.Security.Controller;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,7 +79,31 @@ public class AuthController {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtProvider.generateToken(authentication);
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
+		JwtDto jwtDto = new JwtDto(null, userDetails.getUsername(), userDetails.getAuthorities());
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.SET_COOKIE, jwtProvider.buildAuthCookie(jwt).toString());
+
+		return new ResponseEntity<>(jwtDto, headers, HttpStatus.OK);
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.SET_COOKIE, jwtProvider.buildLogoutCookie().toString());
+		SecurityContextHolder.clearContext();
+		return new ResponseEntity<>(new Mensaje("Sesión cerrada"), headers, HttpStatus.OK);
+	}
+
+	@GetMapping("/me")
+	public ResponseEntity<?> me() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null || !authentication.isAuthenticated()
+				|| "anonymousUser".equals(authentication.getPrincipal())) {
+			return new ResponseEntity<>(new Mensaje("No autenticado"), HttpStatus.UNAUTHORIZED);
+		}
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		JwtDto jwtDto = new JwtDto(null, userDetails.getUsername(), userDetails.getAuthorities());
 		return new ResponseEntity<>(jwtDto, HttpStatus.OK);
 	}
 }

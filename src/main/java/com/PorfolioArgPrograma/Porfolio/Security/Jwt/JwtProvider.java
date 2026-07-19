@@ -8,6 +8,7 @@ import javax.crypto.SecretKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ import io.jsonwebtoken.security.Keys;
 
 /**
  * Clase proveedora de tokens JWT - Actualizada para jjwt 0.12.x
- * 
+ *
  * @author Juan Pablo
  */
 @Component
@@ -31,6 +32,18 @@ public class JwtProvider {
 
     @Value("${jwt.expiration}")
     private int expiration;
+
+    @Value("${jwt.cookie.name}")
+    private String cookieName;
+
+    @Value("${jwt.cookie.secure}")
+    private boolean cookieSecure;
+
+    @Value("${jwt.cookie.same-site}")
+    private String cookieSameSite;
+
+    @Value("${jwt.cookie.path}")
+    private String cookiePath;
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
@@ -67,5 +80,29 @@ public class JwtProvider {
             logger.error("Error en el token: {}", e.getMessage());
             return false;
         }
+    }
+
+    public ResponseCookie buildAuthCookie(String token) {
+        return ResponseCookie.from(cookieName, token)
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .sameSite(cookieSameSite)
+                .path(cookiePath)
+                .maxAge(expiration)
+                .build();
+    }
+
+    public ResponseCookie buildLogoutCookie() {
+        return ResponseCookie.from(cookieName, "")
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .sameSite(cookieSameSite)
+                .path(cookiePath)
+                .maxAge(0)
+                .build();
+    }
+
+    public String getCookieName() {
+        return cookieName;
     }
 }
