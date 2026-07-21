@@ -1,9 +1,21 @@
-FROM amazoncorretto:17-alpine
+# Etapa 1: Build
+FROM maven:3.9-eclipse-temurin-21-alpine AS build
+WORKDIR /build
 
+# Copiar pom.xml y descargar dependencias (cache layer)
+COPY pom.xml .
+RUN mvn -B dependency:go-offline
+
+# Copiar código fuente y compilar
+COPY src ./src
+RUN mvn -B -DskipTests package
+
+# Etapa 2: Runtime
+FROM amazoncorretto:21-alpine
 WORKDIR /app
 
-COPY target/PorfolioArg-0.0.1-SNAPSHOT.jar app.jar
+# Copiar el JAR generado
+COPY --from=build /build/target/*.jar app.jar
 
-EXPOSE ${PORT}
-
-CMD ["sh", "-c", "java -jar /app/app.jar --server.port=${PORT}"]
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
